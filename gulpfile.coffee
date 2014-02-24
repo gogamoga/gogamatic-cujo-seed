@@ -1,6 +1,7 @@
 # Make preparations
 gulp = require 'gulp'
 gulpLoadPlugins = require 'gulp-load-plugins'
+runSequence = require 'run-sequence'
 plugins = gulpLoadPlugins()
 
 log = plugins.util.log
@@ -11,8 +12,10 @@ connect = require 'connect'
 
 # Clean dist and test
 gulp.task 'clean', ->
-  gulp.src('./dist', read: false).pipe plugins.clean force: true
-  gulp.src('./test', read: false).pipe plugins.clean force: true
+  gulp.src(['./dist/*', './dist'], read: false)
+    .pipe(plugins.clean force: true)
+  gulp.src(['./test/*', './test'], read: false)
+    .pipe(plugins.clean force: true)
 
 # Lint the coffee sources
 gulp.task 'lint', ->
@@ -43,6 +46,7 @@ gulp.task 'compile-tests', ['lint-tests'], ->
     .pipe(gulp.dest 'test')
 
 # Copy templates
+
 gulp.task 'templates', ->
   gulp.src(['./src/templates/**/*.*'])
     .pipe(plugins.cached('templating'))
@@ -64,7 +68,7 @@ gulp.task 'watch', ->
   gulp.watch './src/test/*.coffee', ['test']
 
 # Start Dev Server
-gulp.task 'start', ['test', 'watch'], (cb) ->
+gulp.task 'start', ['default', 'watch'], (cb) ->
   dev = connect()
     .use(connect.logger 'dev')
     .use('/', connect.static 'dist')
@@ -84,5 +88,6 @@ gulp.task 'start', ['test', 'watch'], (cb) ->
     cb()
 
 # Default gulp task
-gulp.task 'default', ['clean', 'test' ], -> true
+gulp.task 'default', (cb) ->
+  runSequence 'clean', ['compile', 'compile-tests', 'templates'], 'test', cb
 

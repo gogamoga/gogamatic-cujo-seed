@@ -3,6 +3,6 @@
 /test/
 /dist/
 
-.idea
+.idea/
 
 npm-debug.log

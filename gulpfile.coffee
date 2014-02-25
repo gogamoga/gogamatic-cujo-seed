@@ -48,7 +48,7 @@ gulp.task 'compile-tests', ['lint-tests'], ->
 # Copy templates
 
 gulp.task 'templates', ->
-  gulp.src(['./src/templates/**/*.*'])
+  gulp.src(['./src/templates/**/*'])
     .pipe(plugins.cached('templating'))
     .pipe gulp.dest 'dist'
 
@@ -64,7 +64,7 @@ gulp.task 'test', ['templates', 'compile', 'compile-tests'], ->
 # Watch for the changes
 gulp.task 'watch', ->
   gulp.watch ['./src/**/*.coffee', '!./src/test', '!./src/templates'], ['compile']
-  gulp.watch './src/templates/**/*.*', ['templates']
+  gulp.watch './src/templates/**/*', ['templates']
   gulp.watch './src/test/*.coffee', ['test']
 
 # Start Dev Server
